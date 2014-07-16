@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript" charset="utf-8"></script>						
+<script src="genoaValidator.js" type="text/javascript" charset="utf-8"></script>	
+<style type="text/css">
+	.field { width: 100px; }
+	.field input { width: 100px; }
+	.vldError { border-color: red; }
+	.vldError2 { border-color: blue; }
+	.vldW { position: relative;}
+	.vldW .vldmsg {position:absolute; top:5px; left:110px;width: 250px;}
+</style>
+</head>
+<body>
+<div class="field"><input id="pr" type="text" name="dni" data-vdt="required,dni" placeholder="dni" data-vdtmsg="Probando msg attr"></div>
+<div class="field"><input type="text" name="mail" data-vdt="required,  email" placeholder="mail"></div>
+<div class="field"><input type="button" value="Valida" onclick="validate()"></div>
+<div class="field"><input type="button" value="Valida DNI sin cartel" onclick="validate2(false)"></div>
+<div class="field"><input type="button" value="Valida DNI con cartel" onclick="validate2(true)"></div>
+<div class="field"><input type="button" value="Valida azul" onclick="validate3()"></div>
+<script type="text/javascript">
+
+var validacionesPerso={
+    dni : {
+        error : "Esto es un error dni",
+        validation :  function(value) {
+                if (value.length == 8){
+                    value = '0' + value;
+                }
+		if (/^([0-9]{8})*[a-zA-Z]+$/.test(value)){
+			var numero = value.substr(0,value.length-1);
+			var let = value.substr(value.length-1,1).toUpperCase();
+			numero = numero % 23;
+			var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+			letra = letra.substring(numero,numero+1);
+			if (letra==let)
+				return true;
+			else
+				return false;
+		} else if (/^[a-zA-Z]+([0-9]{7})*[a-zA-Z]+$/.test(value)) {
+			var num;
+			var let1 = value.substr(0, 1);
+			if (let1.toUpperCase() == "X")
+				num = 0;
+			else if(let1.toUpperCase() == "Y")
+				num = 1;
+			else if (let1.toUpperCase() == "Z")
+				num = 2;
+			else
+				return false;	
+			
+			var numero = num+''+value.substr(1,value.length-2);
+			var let = value.substr(value.length-1,1).toUpperCase();
+			numero = numero % 23;
+			var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+			letra = letra.substring(numero,numero+1);
+			if (letra==let)
+				return true;
+			else
+				return false;					
+		} else {
+			return false;
+		}
+		return true;
+        }
+    }
+}
+
+
+
+// cargo 2 validadores (por si hubiese más de un formulario)
+var valid=GenoaValidator();
+var valid2=GenoaValidator({
+	time : 0,
+	errorClass : 'vldError2',
+	showMsg : true
+});
+
+function validate(){
+	// valida un formulario obteniendo un resultado booleano
+	var result=valid.run($( "input[data-vdt]" ));
+}
+
+function validate2(show){
+	// valida un campo obteniendo un resultado booleano. El segundo parámetro sirve para indicar si se quiere mostrar o no el cartel de error de los campos
+	var result=valid.testElement($('#pr'),show);
+}
+
+function validate3(){
+	// valida un formulario obteniendo un resultado booleano
+	var resultValidacion=valid2.run($( "input[data-vdt]" )); // ha de fallar porq en el segundo validador no se ha cargado el tipo dni
+}
+//$('#content').css('min-height',($(window).height()-163)+'px');
+$(document).ready(function(){
+	// añade validaciones adicionales
+	valid.addValidations(validacionesPerso);
+	// inicia validación automática de formulario
+	valid.init($( "input[data-vdt]" ));
+	
+});
+</script>
+	
+</body>
+</html>
