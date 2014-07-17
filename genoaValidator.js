@@ -25,6 +25,44 @@ var GenoaValidator = function(customConfig){
 			email : {
 				error : 'Mail no válido',
 				validation : /[\w-\.]{1,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/,
+			},
+			checked : {
+				error : 'Ha de hacer check en este campo.',
+				validation : function(value,element){
+					return element.is(':checked');
+				}
+			},
+			noblank : {
+				error : 'No puede contener espacios en blanco',
+				validation : function (value){
+					return (value.indexOf(" ")===-1);
+				}
+			},
+			repass : {
+				error : 'Las contraseñas no coinciden',
+				validation : function(value,element,validator){
+					var valid=true;
+					$("[data-"+validator.config.listAttr+"*='repass']").each(function(i,element){
+						element=$(element);
+						if(element.val()!=value){
+							valid=false;
+							return false;
+						}
+					});
+					$("[data-"+validator.config.listAttr+"*='repass']").each(function(i,element){
+						element=$(element);
+						if(!valid) validator.showError(element,'repass');
+						else validator.removeError(element);
+					});
+					return valid;
+				}
+			},
+			minLength : {
+				validation : function (value,element,validator){
+					var length = element.data('minlength');
+					if(value.length<length) return 'El campo ha de tener al menos '+length+' caracteres ';
+					else return true;
+				}
 			}
 		},
 		init : function (arr){
@@ -47,25 +85,35 @@ var GenoaValidator = function(customConfig){
 			});
 			return isValid;
 		},
-		showError : function(element,tester){
-			var msg=(element.data(this.config.errorAttr))?element.data(this.config.errorAttr):this.validations[tester].error;
-			element.addClass(this.config.errorClass);
-			var parent=element.parent();
-			if(!parent.hasClass(this.config.errorWrapperClass)){
-				element.wrap('<div class="'+this.config.errorWrapperClass+'"></div>');
-				parent=element.parent(); // se ha redefinido el DOM al hacer el wrap
-				parent.append('<div class="'+this.config.errorMsgClass+'"></div>');
+		showError : function(element,tester,msg){
+			try{
+				if(!msg)
+					msg=(element.data(this.config.errorAttr))?element.data(this.config.errorAttr):this.validations[tester].error;
+				element.addClass(this.config.errorClass);
+				var parent=element.parent();
+				if(!parent.hasClass(this.config.errorWrapperClass)){
+					element.wrap('<div class="'+this.config.errorWrapperClass+'"></div>');
+					parent=element.parent(); // se ha redefinido el DOM al hacer el wrap
+					parent.append('<div class="'+this.config.errorMsgClass+'"></div>');
+				}
+				parent.find('.'+this.config.errorMsgClass).html(msg).show(this.config.time);
+			}catch(e){
+				console.log('Error al mostrar mensaje del validador Genoa');
+				console.log(e);
 			}
-			parent.find('.'+this.config.errorMsgClass).html(msg).show(this.config.time);
-			//console.log(tester);
 		},
 		removeError : function(element){
-			element.removeClass(this.config.errorClass);
-			var parent = $(element.parent());
-			if (parent.hasClass(this.config.errorWrapperClass)){
-				parent.find('.'+this.config.errorMsgClass).hide(this.config.time);
-				// borrar el interior del mensaje, etc
-			}
+			try{
+				element.removeClass(this.config.errorClass);
+				var parent = $(element.parent());
+				if (parent.hasClass(this.config.errorWrapperClass)){
+					parent.find('.'+this.config.errorMsgClass).hide(this.config.time);
+					// borrar el interior del mensaje, etc
+				}
+			}catch(e){
+				console.log('Error al eliminar error del validador Genoa');
+				console.log(e);
+			}				
 		},
 		testElement : function(element,showError){
 		    if(typeof showError == 'undefined') showError=this.config.showMsg;
@@ -74,8 +122,9 @@ var GenoaValidator = function(customConfig){
 		    var $this=this;
 		    $.each(element.data(this.config.listAttr).split(','),function(j,e){
 				e = e.trim();
-				if(!$this.doTest(element,e)){
-					if(showError) $this.showError(element,e);
+				var res=$this.doTest(element,e);
+				if(res!==true){
+					if(showError) $this.showError(element,e,res);
 					isValid=false;
 					return false; // no sigo validando el resto de cosas del campo porque ya está mal
 				}
@@ -89,7 +138,7 @@ var GenoaValidator = function(customConfig){
 			// select, textarea, elementos rarunos...cada uno tiene su movida
 			var val = element.val();
 			switch(typeof testObj.validation){
-				case 'function': return testObj.validation(val,element);
+				case 'function': return testObj.validation(val,element,this);
 				case 'object': return testObj.validation.test(val);
 				default: return this.exception('Validación '+tester+' no válida');
 			}
