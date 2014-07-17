@@ -18,7 +18,7 @@ var GenoaValidator = function(customConfig){
 		validations : {
 			required : {
 				error : 'Obligatorio',
-				validation : function(value){
+				validation : function(value,element){
 					return (!value)?false:true;
 				}
 			},
@@ -87,9 +87,10 @@ var GenoaValidator = function(customConfig){
 			if(typeof testObj == 'undefined') return this.exception('Validación '+tester+' no descrita para el campo '+element.attr('name'));
 			// TODO coger el value según el tipo de elemento y guardarlo en una variable value que se pase a lo de debajo.
 			// select, textarea, elementos rarunos...cada uno tiene su movida
+			var val = element.val();
 			switch(typeof testObj.validation){
-				case 'function': return testObj.validation(element.val());
-				case 'object': return testObj.validation.test(element.val());
+				case 'function': return testObj.validation(val,element);
+				case 'object': return testObj.validation.test(val);
 				default: return this.exception('Validación '+tester+' no válida');
 			}
 		},

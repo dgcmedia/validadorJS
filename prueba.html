@@ -25,9 +25,10 @@
 var validacionesPerso={
     dni : {
         error : "Esto es un error dni",
-        validation :  function(value) {
+        validation :  function(value,element) {
                 if (value.length == 8){
                     value = '0' + value;
+                    element.val(value);
                 }
 		if (/^([0-9]{8})*[a-zA-Z]+$/.test(value)){
 			var numero = value.substr(0,value.length-1);
