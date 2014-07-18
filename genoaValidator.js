@@ -63,6 +63,14 @@ var GenoaValidator = function(customConfig){
 					if(value.length<length) return 'El campo ha de tener al menos '+length+' caracteres ';
 					else return true;
 				}
+			},
+			phone : {
+				error : 'Formato no válido. No puede contener espacios',
+				validation : /^$|(\\+[0-9]{2})?[0-9]{9}/
+			},
+			pass : {
+				error : 'La contraseña ha de tener un mínimo de 8 caracteres, y contener al menos una mayúscula, una minúscula y un número. Sin espacios.',
+				validation : /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,255}$/
 			}
 		},
 		init : function (arr){
