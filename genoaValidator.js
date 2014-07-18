@@ -42,17 +42,18 @@ var GenoaValidator = function(customConfig){
 				error : 'Las contraseñas no coinciden',
 				validation : function(value,element,validator){
 					var valid=true;
-					$("[data-"+validator.config.listAttr+"*='repass']").each(function(i,element){
-						element=$(element);
-						if(element.val()!=value){
+					var passElements=$("[data-"+validator.config.listAttr+"*='repass']");
+					$.each(passElements,function(i,item){
+						item=$(item);
+						if(item.val()!=value){
 							valid=false;
 							return false;
 						}
 					});
-					$("[data-"+validator.config.listAttr+"*='repass']").each(function(i,element){
-						element=$(element);
-						if(!valid) validator.showError(element,'repass');
-						else validator.removeError(element);
+					$.each(passElements,function(i,item){
+						item=$(item);
+						if(!valid) validator.showError(item,'repass');
+						else validator.removeError(item);
 					});
 					return valid;
 				}
