@@ -70,10 +70,10 @@ var GenoaValidator = function(customConfig){
 			try{
 				if(!msg){
 					var lang = this.config.lang;
-					var msgVal='';
+					var msgVal='Error';
 					if(typeof this.validations[tester].error == "object"){
 						msgVal=(typeof this.validations[tester].error[lang] != 'undefined')?this.validations[tester].error[lang]:this.validations[tester].error[0];
-					}else{
+					}else if(typeof this.validations[tester].error == 'string'){
 						msgVal=this.validations[tester].error;
 					}
 					msg=(element.data(this.config.errorAttr))?element.data(this.config.errorAttr):msgVal;
@@ -87,8 +87,7 @@ var GenoaValidator = function(customConfig){
 				}
 				parent.find('.'+this.config.errorMsgClass).html(msg).show(this.config.time);
 			}catch(e){
-				console.log('Error al mostrar mensaje del validador Genoa');
-				console.log(e);
+				this.exception('Error al mostrar mensaje del validador Genoa',e);
 			}
 		},
 		/**
@@ -103,8 +102,7 @@ var GenoaValidator = function(customConfig){
 					// borrar el interior del mensaje, etc
 				}
 			}catch(e){
-				console.log('Error al eliminar error del validador Genoa');
-				console.log(e);
+				this.exception('Error al eliminar error del validador Genoa',e);
 			}				
 		},
 		
@@ -152,8 +150,9 @@ var GenoaValidator = function(customConfig){
 		/**
 		 * Gestión tonta de excepciones.
 		 */
-		exception : function(msg){
+		exception : function(msg,error){
 			console.log(msg);
+			console.log(error);
 			return false;
 		},
 		/**
