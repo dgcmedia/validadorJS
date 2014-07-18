@@ -11,7 +11,7 @@ var GenoaValidator = function(customConfig){
 		},
 		addValidations : function(obj){
 			var $this=this;
-			$.each(obj,function(i,el){
+			jQuery.each(obj,function(i,el){
 				$this.validations[i]=el;
 			});
 		},
@@ -42,16 +42,16 @@ var GenoaValidator = function(customConfig){
 				error : 'Las contraseñas no coinciden',
 				validation : function(value,element,validator){
 					var valid=true;
-					var passElements=$("[data-"+validator.config.listAttr+"*='repass']");
-					$.each(passElements,function(i,item){
-						item=$(item);
+					var passElements=jQuery("[data-"+validator.config.listAttr+"*='repass']");
+					jQuery.each(passElements,function(i,item){
+						item=jQuery(item);
 						if(item.val()!=value){
 							valid=false;
 							return false;
 						}
 					});
-					$.each(passElements,function(i,item){
-						item=$(item);
+					jQuery.each(passElements,function(i,item){
+						item=jQuery(item);
 						if(!valid) validator.showError(item,'repass');
 						else validator.removeError(item);
 					});
@@ -76,8 +76,8 @@ var GenoaValidator = function(customConfig){
 		},
 		init : function (arr){
 			var $this=this;
-			$.each(arr,function(index,element){
-				var element=$(element);
+			jQuery.each(arr,function(index,element){
+				var element=jQuery(element);
 				element.focus(function(e){
 					$this.removeError(element);
 				}).blur(function(e){
@@ -88,8 +88,8 @@ var GenoaValidator = function(customConfig){
 		run : function (arr){
 			var $this=this;
 			var isValid=true;
-			$.each(arr,function(index,element){
-			    var element=$(element);
+			jQuery.each(arr,function(index,element){
+			    var element=jQuery(element);
 			    if(!$this.testElement(element)) isValid=false;
 			});
 			return isValid;
@@ -114,7 +114,7 @@ var GenoaValidator = function(customConfig){
 		removeError : function(element){
 			try{
 				element.removeClass(this.config.errorClass);
-				var parent = $(element.parent());
+				var parent = jQuery(element.parent());
 				if (parent.hasClass(this.config.errorWrapperClass)){
 					parent.find('.'+this.config.errorMsgClass).hide(this.config.time);
 					// borrar el interior del mensaje, etc
@@ -129,7 +129,7 @@ var GenoaValidator = function(customConfig){
 		    if(showError) this.removeError(element);
 		    var isValid=true;
 		    var $this=this;
-		    $.each(element.data(this.config.listAttr).split(','),function(j,e){
+		    jQuery.each(element.data(this.config.listAttr).split(','),function(j,e){
 				e = e.trim();
 				var res=$this.doTest(element,e);
 				if(res!==true){
@@ -157,6 +157,6 @@ var GenoaValidator = function(customConfig){
 			return false;
 		}
 	};
-	if(typeof customConfig != 'undefined') obj.config=$.extend(obj.config, customConfig);
+	if(typeof customConfig != 'undefined') obj.config=jQuery.extend(obj.config, customConfig);
 	return obj;
 }
