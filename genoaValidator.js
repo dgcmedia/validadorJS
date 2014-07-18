@@ -159,38 +159,50 @@ var GenoaValidator = function(customConfig){
 		/**
 		 * Colección de validaciones.
 		 * clave : {
-		 * 		error : (opcional),
+		 * 		error : (opcional. Texto o un array utilizando por clave el lenguaje),
 		 * 		validation : (regex o funcion)
 		 * }
 		 */
 		validations : {
 			required : {
-				error : ['Obligatorio'],
+				error : [
+				    'Campo obligatorio.',
+				    'Required field.'
+				],
 				validation : function(value,element){
 					return (!value)?false:true;
 				}
 			},
 			email : {
 				error : [
-				    'Mail no válido',
-				    'Invalid mail'
+				    'Email no válido.',
+				    'Invalid email.'
 				],
 				validation : /[\w-\.]{1,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/,
 			},
 			checked : {
-				error : ['Ha de hacer check en este campo.'],
+				error : [
+				    'Debe hacer check en esta opción.',
+				    'Please do check this option.'
+				],
 				validation : function(value,element){
 					return element.is(':checked');
 				}
 			},
 			noblank : {
-				error : ['No puede contener espacios en blanco'],
+				error : [
+				    'No puede contener espacios en blanco.',
+				    'The field can not contain blank spaces.'
+				],
 				validation : function (value){
 					return (value.indexOf(" ")===-1);
 				}
 			},
 			repass : {
-				error : ['Las contraseñas no coinciden'],
+				error : [
+				    'Las contraseñas no coinciden.',
+				    'Passwords do not match.'
+				],
 				validation : function(value,element,validator){
 					var valid=true;
 					var passElements=jQuery("[data-"+validator.config.listAttr+"*='repass']");
@@ -213,19 +225,25 @@ var GenoaValidator = function(customConfig){
 				validation : function (value,element,validator){
 					var length = element.data('minlength');
 					var msgs=[
-					    'El campo ha de tener al menos '+length+' caracteres ',
-					    'The field must be at least '+length+' characters'
+					    'El campo ha de tener al menos '+length+' caracteres.',
+					    'The field must be at least '+length+' characters.'
 					];
 					if(value.length<length) return msgs[validator.config.lang];
 					else return true;
 				}
 			},
 			phone : {
-				error : ['Formato no válido. No puede contener espacios'],
+				error : [
+				    'Introduzca un teléfono válido. No puede contener espacios.',
+				    'Please enter a valid phone number. It can not contain blank spaces.'
+				],
 				validation : /^$|(\\+[0-9]{2})?[0-9]{9}/
 			},
 			pass : {
-				error : ['La contraseña ha de tener un mínimo de 8 caracteres, y contener al menos una mayúscula, una minúscula y un número. Sin espacios.'],
+				error : [
+				    'La contraseña ha de tener un mínimo de 8 caracteres, y contener al menos una mayúscula, una minúscula y un número. Sin espacios.',
+				    'The password must be at least 8 characters, and contain at least one uppercase, one lowercase and one number. No blank spaces.'
+				],
 				validation : /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,255}$/
 			}
 		}
