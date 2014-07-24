@@ -20,6 +20,7 @@ var GenoaValidator = function(customConfig){
 			errorAttr : 'vdtmsg', // data-XXXX en el que opcionalmente se puede insertar un mensaje de error para un campo
 			listAttr : 'vdt', // data-XXXX en el que se introducen las validaciones para un campo separadas por ,
 			time : 0, // tiempo muestra cartel error
+			posAttr: 'vdtpos', // en el input se puede indicar la posicion del mensaje de error data-XXX="10,false,false,15" (tipo css)
 			showMsg : true, // mostrar mensaje de error
 			lang : 0
 		},
@@ -85,7 +86,18 @@ var GenoaValidator = function(customConfig){
 					parent=element.parent(); // se ha redefinido el DOM al hacer el wrap
 					parent.append('<div class="'+this.config.errorMsgClass+'"></div>');
 				}
-				parent.find('.'+this.config.errorMsgClass).html(msg).show(this.config.time);
+				var msgEl=parent.find('.'+this.config.errorMsgClass);
+				debugger;
+				if(element.data(this.config.posAttr)){
+					posArr=element.data(this.config.posAttr).split(',');
+					var pos = ['top','right','bottom','left'];
+					for(var k in pos){
+						if(typeof posArr[k] != 'undefined' && posArr[k].trim()!="false"){
+							msgEl.css(pos[k],parseInt(posArr[k])+'px');
+						}
+					}
+				}
+				msgEl.html(msg).show(this.config.time);
 			}catch(e){
 				this.exception('Error al mostrar mensaje del validador Genoa',e);
 			}
