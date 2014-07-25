@@ -23,7 +23,7 @@ var GenoaValidator = function(customConfig){
 			time : 0, // tiempo muestra cartel error
 			posAttr: 'vdtpos', // en el input se puede indicar la posicion del mensaje de error data-XXX="10,false,false,15" (tipo css)
 			showMsg : true, // mostrar mensaje de error
-			lang : 0
+			lang : 0 // en caso de que los mensajes de error sean un array, índice que cogerá
 		},
 		/**
 		 * Método para añadir nuevas validaciones del mismo formato que las validaciones incluidas en el plugin
