@@ -153,7 +153,7 @@ var GenoaValidator = function(customConfig){
 			var val = '';
 			switch(jQuery(element).prop('tagName')){
 			case 'SELECT':
-				val = element.children(':selected').val()
+				val = element.children(':selected').val();
 				break;
 			default:
 				val = element.val();
